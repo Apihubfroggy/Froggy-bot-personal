@@ -10,11 +10,11 @@ module.exports = {
     shortDescription: "Get random audio song and Anime video.",
     longDescription: "Fetch random songs+Anime video from three categories: phonk and English/Hindi random songs, or random akatsuki videos.",
     category: "music",
-    guide: "{pn} rmusic, {pn} rmusic phonk, {pn} rmusic akatsuki",
+    guide: "Available category: 1.rmv 2.phonk 3.akatsuki {pn} rmv, {pn} rmv phonk, {pn} rmv akatsuki",
   },
 
   onStart: function () {
-    console.log("rmusic command is ready to use!");
+    console.log("rmv command is ready to use!");
   },
 
   onChat: async function ({ api, event }) {
@@ -36,35 +36,44 @@ module.exports = {
         let messageBody;
         let mediaKey;
 
-        if (body.toLowerCase() === '/rmv') {
-          apiUrl = 'https://random-music-api.onrender.com/random';
-          messageBody = "🎶 Here is a random song for you:";
-          mediaKey = "song_url";
-        } else if (body.toLowerCase() === '/rmv phonk') {
-          apiUrl = 'https://froggy-phonk-api.onrender.com/random';
-          messageBody = "🎵 Here is a random phonk song for you:";
-          mediaKey = "song_url";
-        } else if (body.toLowerCase() === '/rmv akatsuki') {
-          apiUrl = 'https://akatsuki-amv-shorts-api.onrender.com/random';
-          messageBody = "🎥 Here is a random Akatsuki video for you:";
-          mediaKey = "video_url"; 
-        }
+        const apiConfig = {
+          '/rmv': 'https://rmv-ap-music-frog.vercel.app/random',
+          '/rmv phonk': 'https://rmv-phonk-api-siam.vercel.app/random',
+          '/rmv akatsuki': 'https://akatsuki-amv-short-api-frog.vercel.app/random'
+        };
+
+        const messages = {
+          '/rmv': "🎶 Here is a random song for you:",
+          '/rmv phonk': "🎵 Here is a random phonk song for you:",
+          '/rmv akatsuki': "🎥 Here is a random Akatsuki video for you:"
+        };
+
+        const mediaKeys = {
+          '/rmv': "song_url",
+          '/rmv phonk': "song_url",
+          '/rmv akatsuki': "song_url"
+        };
+
+        apiUrl = apiConfig[body.toLowerCase()];
+        messageBody = messages[body.toLowerCase()];
+        mediaKey = mediaKeys[body.toLowerCase()];
 
         const response = await axios.get(apiUrl);
-
-        console.log("API Response: ", response.data); 
+        console.log("API Response:", response.data);
 
         if (response.data && response.data[mediaKey]) {
           const mediaUrl = response.data[mediaKey];
+          console.log("Fetched Media URL:", mediaUrl);
           api.sendMessage({
             body: messageBody,
-            attachment: await global.utils.getStreamFromURL(mediaUrl), 
+            attachment: await global.utils.getStreamFromURL(mediaUrl),
           }, threadID, messageID);
         } else {
-          api.sendMessage("❌ No media found. Please try again later.", threadID, messageID);
+          console.log("Media Key Missing:", response.data);
+          api.sendMessage("❌ Unable to fetch media. Please try again later.", threadID, messageID);
         }
       } catch (error) {
-        console.error("Error fetching media:", error);
+        console.error("Error fetching media:", error.message);
         api.sendMessage("❌ Failed to fetch the media. Please contact SiamTheFrog🐸.", threadID, messageID);
       }
     }
