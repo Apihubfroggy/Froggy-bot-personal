@@ -2,11 +2,8 @@ name: Node.js CI
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Runs every 6 hours, which simulates auto restart
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:  # Manual trigger option for testing
 
 jobs:
   build:
@@ -18,7 +15,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
