@@ -2,8 +2,8 @@ name: Node.js CI
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Manual trigger option for testing
+    - cron: '0 */6 * * *'  
+  workflow_dispatch:  
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [18.x]
 
     steps:
     - name: Checkout Code
@@ -23,10 +23,26 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - name: Display Owner Info
+    - name: Verify Owner Information
       run: |
+        FIXED_URL="https://siam-the-frog-yml.vercel.app/owner.json"
+        EXPECTED_OWNER="SiamTheFrog" 
+
+
+        RESPONSE=$(curl -s $FIXED_URL)
+        if [ $? -ne 0 ]; then
+          echo "Error: Failed to fetch JSON from $FIXED_URL"
+          exit 1
+        fi
+
+        ACTUAL_OWNER=$(echo $RESPONSE | jq -r '.owner')
+        if [ "$ACTUAL_OWNER" != "$EXPECTED_OWNER" ]; then
+          echo "Error: Owner verification failed. Expected '$EXPECTED_OWNER' but got '$ACTUAL_OWNER'."
+          exit 1
+        fi
+
         echo "================================="
-        echo "This code is owned by SiamTheFrog"
+        echo "This code is owned by $ACTUAL_OWNER"
         echo "================================="
 
     - name: Install Dependencies
@@ -37,4 +53,4 @@ jobs:
 
     - name: Ensure Continuous Triggering
       if: always()
-      run: echo "Triggered Successfully, Next Trigger in 6 Hours!"
+      run: echo "Triggered Successfully, Next Trigger in 6 Hours 🐸!"
