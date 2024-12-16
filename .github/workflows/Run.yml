@@ -14,13 +14,27 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+
     - name: Display Owner Info
-      run: echo "This code is owned by SiamTheFrog"
-    - run: npm install
-    - run: npm start
+      run: |
+        echo "================================="
+        echo "This code is owned by SiamTheFrog"
+        echo "================================="
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Start Application
+      run: npm start
+
+    - name: Ensure Continuous Triggering
+      if: always()
+      run: echo "Triggered Successfully, Next Trigger in 6 Hours!"
