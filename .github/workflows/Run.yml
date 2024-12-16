@@ -3,7 +3,7 @@ name: Node.js CI
 on:
   schedule:
     - cron: '0 */6 * * *'  # Every 6 hours
-  workflow_dispatch:  # Optional manual trigger for testing
+  workflow_dispatch:  # Manual trigger option for testing
 
 jobs:
   build:
@@ -21,8 +21,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm install
-    - run: |
-        echo "Starting the server..."
-        nohup npm start &  # Run in background to prevent timeout
-    - name: Keep job running
-      run: sleep 3600  # Simulates continuous job running
+    - run: npm start
