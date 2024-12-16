@@ -20,5 +20,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - name: Display Owner Info
+      run: echo "This code is owned by SiamTheFrog"
     - run: npm install
     - run: npm start
