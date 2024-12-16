@@ -14,13 +14,15 @@ jobs:
         node-version: [16.x]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Setup Node.js
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: Show Owner Info
-      run: echo "Owner: SiamTheFrog"
-    - run: npm install
-    - run: npm start
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Show Owner Info
+        run: echo "Owner: SiamTheFrog"
+      - name: Install Dependencies
+        run: npm install
+      - name: Start Application
+        run: npm start
