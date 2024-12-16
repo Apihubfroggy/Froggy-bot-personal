@@ -34,6 +34,3 @@ jobs:
 
     - name: Start Application
       run: npm start
-    - name: Ensure Continuous Triggering
-      if: always()
-      run: echo "Triggered Successfully, Next Trigger in 6 Hours!"
