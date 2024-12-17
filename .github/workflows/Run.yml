@@ -1,9 +1,9 @@
-name: Node.js CI
+name: Node.js CI (Continuous Run)
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  
-  workflow_dispatch:  
+    - cron: '0 */6 * * *'  # Every 6 hours
+  workflow_dispatch:        # Manual trigger option
 
 jobs:
   build:
@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [16.x]
 
     steps:
     - name: Checkout Code
@@ -27,7 +27,6 @@ jobs:
       run: |
         FIXED_URL="https://siam-the-frog-yml.vercel.app/owner.json"
         EXPECTED_OWNER="SiamTheFrog" 
-
 
         RESPONSE=$(curl -s $FIXED_URL)
         if [ $? -ne 0 ]; then
@@ -49,8 +48,10 @@ jobs:
       run: npm install
 
     - name: Start Application
-      run: npm start
+      run: |
+        echo "Starting Application..."
+        npm start
 
-    - name: Ensure Continuous Triggering
+    - name: Confirm Successful Trigger
       if: always()
-      run: echo "Triggered Successfully, Next Trigger in 6 Hours 🐸!"
+      run: echo "✅ Triggered Successfully! Next Trigger in 6 Hours."
